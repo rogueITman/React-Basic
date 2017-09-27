@@ -10,7 +10,7 @@ export class WelcomeGuest extends React.Component {
   }
   render() {
     return (
-      <div >Hello and Welcome! We're looking forward to having you again as our guest.</div>
+      <div >Hello and Welcome! We\'re looking forward to having you again as our guest.</div>
     );
   }
 }

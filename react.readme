@@ -1,0 +1,133 @@
+COMPONENT LIFECYCLE
+
+componentWillMount --> immediately before initial rendering
+componentDidMount  --> immediately after initial rendering
+componentWillReceiveProps --> when component receives new componentWillReceiveProps
+shouldComponentUpdate --> before rendering, after receiving new props or shouldComponentUpdate | OPTION: can RETURN false to prevent rendering
+componentWillUpdate --> before rendering, after receiving new props or shouldComponentUpdate
+componentDIdUpdate --> after component's updates are flushed to DOM -meaning rerendered
+componentWillUnmount --> immediately before removing component from DOM
+
+URL
+handle or support /'s in url:
+-config our server in package.json
+-add --history-api-fallback
+-"build": "webpack -d && webpack-dev-server && copy src/index.html dist/index.html --content-base src/ --inline --hot --history-api-fallback",
+
+CONDITIONAL STYLING
+Handle active Links:
+-activeStyle={{color: "blue"}}
+-activeClassName={"active"}
+
+GET PARAMS
+-{this.props.params.[[name of param]]}
+
+RESOURCES
+https://github.com/reactjs/react-router-tutorial/tree/master/lessons
+
+// to test out how some specific JSX is converted into JavaScript, you can try out 
+https://babeljs.io/repl/#?babili=false&evaluate=true&lineWrap=false&presets=es2015%2Creact%2Cstage-0&code=function%20hello()%20%7B%0A%20%20return%20%3Cdiv%3EHello%20world!%3C%2Fdiv%3E%3B%0A%7D
+
+REDUX
+---------------------------------------------------------------
+// REDUX handles STATE
+npm install redux --save
+npm install react-redux --save  // this is the bridge between both
+
+npm install redux-logger --save
+npm install redux-thunk --save
+npm install redux-promise-middleware --save
+
+
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import logger from "redux-logger"; // no curly braces | good for debugging
+// NOTE: ES6 if "export default" used, then remove curly braces from import
+
+import thunk from "redux-thunk";
+import promise from "redux-promise-middleware";
+-----------------------------------------------------------------------
+
+// here we named the REDUCER "reducer" but we can use any name
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "ADD":
+      state = state + action.payload;
+      break;
+    case "SUBTRACT":
+      state = state - action.payload;
+      break;
+  }
+  // must always return state
+  return state;
+};
+
+// create the store 
+// 1st param of createStore tells the store what REDUCER is responsible for changing the STATE
+// 2nd param is OPTIONAL because I can set initial STATE in the REDUCERs STATE param ES6 FEATURE
+const store = createStore(reducer, 1);
+
+store.subscribe(() => {
+  console.log("Store updated", store.getState());
+});
+
+// purpose - to DISPATCH an ACTION
+// DISPATCH ACTION is handled by REDUCER
+// can invoke multiple dispatch methods
+// dispatch method takes an OBJECT as its PARAM
+// should always use PAYLOAD as key (other packages expect PAYLOAD)
+store.dispatch({
+  type: "ADD",
+  payload: 10
+})
+
+-----------------------------------------------------------------------
+// combineReducers takes an OBJECT | ES6 user short syntax below if key/values match
+// 2nd param of createStore is an empty {} for STATE | initialize STATE but will be overwritten by REDUCER later during execution
+// 3rd param is where we inject the applyMiddleware method
+store = createStore(combineReducers({mathReducer, userReducer}), {}, applyMiddleware(myLogger))
+
+store = createStore(combineReducers({mathReducer, userReducer}), {}, applyMiddleware(logger()))
+
+-----------------------------------------------------------------------------
+// CONNECT REACT AND REDUX
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  window.document.getElementById('app')
+);
+
+----------------------------------------------------------------------------------------
+// CREATE ELEMENT 
+
+JSX just provides syntactic sugar for the React.createElement(component, props, ...children) function. The JSX code:
+
+<MyButton color="blue" shadowSize={2}>
+  Click Me
+</MyButton>
+compiles into:
+
+React.createElement(
+  MyButton,
+  {color: 'blue', shadowSize: 2},
+  'Click Me'
+)
+
+--------------------------------------------------------------------------------------
+// REACT NOTES
+
+You may embed any expressions in JSX by wrapping them in curly braces. 
+This includes the JavaScript logical && operator. 
+It can be handy for conditionally including an element:
+It works because in JavaScript, 
+true && expression always evaluates to expression, 
+and 
+false && expression always evaluates to false.
+Therefore, 
+if the condition is true, the element right after && will appear in the output. 
+If it is false, React will ignore and skip it.
+
+
+
+
+
